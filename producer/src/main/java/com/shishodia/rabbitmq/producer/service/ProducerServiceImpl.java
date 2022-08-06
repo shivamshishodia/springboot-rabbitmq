@@ -17,7 +17,7 @@ public class ProducerServiceImpl implements ProducerService {
     private RabbitTemplate rmqTemplate;
 
     @Override
-    public void deals(Deals deals) {
+    public void deals(Deals deals) throws Exception {
 
         try {
             if (!deals.getIsClosed()) {
@@ -29,6 +29,7 @@ public class ProducerServiceImpl implements ProducerService {
             }
         } catch (Exception e) {
             log.warn("ProducerServiceImpl (deals) > An exception occurred: " + e);
+            throw new Exception("Unable to enqueue deals.");
         }
     }
 

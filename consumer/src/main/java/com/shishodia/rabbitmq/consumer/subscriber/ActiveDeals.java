@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.shishodia.rabbitmq.consumer.config.MessageConfig;
 import com.shishodia.rabbitmq.consumer.dto.Deals;
+import com.shishodia.rabbitmq.consumer.exception.InvalidDealException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ActiveDeals {
 
     @RabbitListener(queues = MessageConfig.QUEUE_ACTIVE)
-    public void consumeFeed(Deals product) {
+    public void consumeFeed(Deals product) throws InvalidDealException {
+
+        if (product.getId() < 10) {
+            throw new InvalidDealException();
+        }
+
         try {
             log.info("Product recieved by Inventory: " + product.toString());
         } catch (Exception e) {

@@ -7,6 +7,6 @@ import com.shishodia.rabbitmq.producer.dto.Deals;
 @Service
 public interface ProducerService {
 
-    public void deals(Deals deals);
+    public void deals(Deals deals) throws Exception;
 
 }
