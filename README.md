@@ -12,4 +12,9 @@ The following steps explain how to install and run RabbitMQ locally:
 
 ### Producer
 
+- Connection is establised not at the boot time but when RabbitTemplate calls `convertAndSend`.
 - If the exchange and queues are not created manually, RabbitTemplate will create them when `convertAndSend` method is called.
+
+### Consumer
+
+- Connection is establised at boot time.
