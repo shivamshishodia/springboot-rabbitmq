@@ -24,3 +24,22 @@ The following steps explain how to install and run RabbitMQ locally:
 - Retry configurations are included inside `application.properties` file.
 - Consumer need not have `MessageConfig` with Exchange, Queue and QueueBindings declarations but you can store queue names in it for `RabbitListener`.
 - After retries are exhausted `InvalidDealException` basically sends a NACK back to the queue. This helps queue redirect the message to dead letter exchange.
+
+### Delete Pre-created Exchanges
+
+- Goto `http://localhost:15672/cli/rabbitmqadmin` and download `rabbitmqadmin`.
+- You can place this file in `C:\Program Files\RabbitMQ Server\rabbitmq_server-3.10.7\sbin`.
+- To execute use `python rabbitmqadmin --help`.
+- You can delete exchange using `python rabbitmqadmin delete exchange --vhost=dev name=amq.direct -u guest -p guest`.
+
+### Route Dead Letter Queues
+
+- Enable Shovel using `rabbitmq-plugins enable rabbitmq_shovel rabbitmq_shovel_management`.
+- Once done, click on dead letter queue and go to `Move messages` section.
+- Enter the destination queue as the actual queue. The messages will be moved to the entered queue.
+- If you enter a queue which does not exist, then RMQ will create that queue and route the messages into the newly created queue.
+
+### Todo
+
+- Consumer bulk read.
+- Producer publish confirm.
