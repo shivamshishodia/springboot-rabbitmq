@@ -1,5 +1,6 @@
 package com.shishodia.rabbitmq.producer.controller;
 
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,26 @@ public class ProducerControllerImpl implements ProducerController {
         try {
             producerService.deals(deals);
             apiResponse = new Response(HttpStatus.OK, "Your deal has been processed.");
+            return new ResponseEntity<Object>(apiResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.warn("An exception occurred: " + e);
+            apiResponse = new Response(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong while handling your deal.");
+            return new ResponseEntity<Object>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> dealsPublishConfirm(Deals deals) {
+        Response apiResponse = new Response();
+
+        if (deals.getProducts().isEmpty()) {
+            apiResponse = new Response(HttpStatus.BAD_REQUEST, "No product(s) present in your deal.");
+            return new ResponseEntity<Object>(apiResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            CorrelationData correlationData = producerService.dealsPublishConfirm(deals);
+            apiResponse = new Response(HttpStatus.OK, "Your deal has been processed: " + correlationData.getId());
             return new ResponseEntity<Object>(apiResponse, HttpStatus.CREATED);
         } catch (Exception e) {
             log.warn("An exception occurred: " + e);

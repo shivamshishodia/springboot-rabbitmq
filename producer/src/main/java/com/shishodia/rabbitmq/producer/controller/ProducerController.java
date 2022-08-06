@@ -17,5 +17,8 @@ public interface ProducerController {
 
     @PostMapping(value = "/deals", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deals(@RequestBody Deals deals);
+
+    @PostMapping(value = "/deals/confirms", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> dealsPublishConfirm(@RequestBody Deals deals);
     
 }
