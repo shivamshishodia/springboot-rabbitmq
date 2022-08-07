@@ -54,3 +54,7 @@ The following steps explain how to install and run RabbitMQ locally:
 
 - `basic.qos` method makes it possible to limit the number of unacknowledged messages on a channel (or connection) when consuming (aka "prefetch count"). Unfortunately the channel is not the ideal scope for this - since a single channel may consume from multiple queues, the channel and the queue(s) need to coordinate with each other for every message sent to ensure they don't go over the limit. This is slow on a single machine, and very slow when consuming across a cluster.
 - Read [Consumer Prefetch](https://www.rabbitmq.com/consumer-prefetch.html).
+
+# Database Commit Interval
+
+- Let us assume that `commit-interval` is set to 50. Let us also assume among 1000 records, one record will cause exception while inserting data into database. If our API fails to commit the chunk (here 50 items) thereby causing a rollback, Spring Batch will rerun each item of the problematic chunk individually with one commit/transaction for each item. Therefore, all 49 items will be present in database except the one item that caused Spring Batch to roll back the chunk.
