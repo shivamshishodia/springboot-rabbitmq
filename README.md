@@ -46,8 +46,11 @@ The following steps explain how to install and run RabbitMQ locally:
 - In `ProducerServiceImpl` class, set `setConfirmCallback` and `setReturnsCallback` for RabbitMQTemplate under @PostConstruct annotation. In `dealsPublishConfirm` method, add correlation data (use UUID) to track request. `convertAndSend` will take correlation data as last input.
 - ACK will be recieved by `setConfirmCallback` under @PostConstruct annotation.
 
-### Todo
+### Multiple Consumer Instances
 
-- Consumer batch poll.
-- Multiple consumers reading from same queue.
-- Database batch commit.
+- When multiple consumers subscribe to the same queue, the load is balanced between the consumers in round robin fashion. Each consumer polls using a single thread.
+
+### Consumer Batch Poll
+
+- `basic.qos` method makes it possible to limit the number of unacknowledged messages on a channel (or connection) when consuming (aka "prefetch count"). Unfortunately the channel is not the ideal scope for this - since a single channel may consume from multiple queues, the channel and the queue(s) need to coordinate with each other for every message sent to ensure they don't go over the limit. This is slow on a single machine, and very slow when consuming across a cluster.
+- Read [Consumer Prefetch](https://www.rabbitmq.com/consumer-prefetch.html).
