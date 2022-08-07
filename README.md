@@ -39,7 +39,15 @@ The following steps explain how to install and run RabbitMQ locally:
 - Enter the destination queue as the actual queue. The messages will be moved to the entered queue.
 - If you enter a queue which does not exist, then RMQ will create that queue and route the messages into the newly created queue.
 
+### Producer Publish Confirm
+
+- In Producer, include relevant properties in `application.properties`.
+- Create a new endpoint `api/v1/deals/confirms` (use thunderclient request under resources).
+- In `ProducerServiceImpl` class, set `setConfirmCallback` and `setReturnsCallback` for RabbitMQTemplate under @PostConstruct annotation. In `dealsPublishConfirm` method, add correlation data (use UUID) to track request. `convertAndSend` will take correlation data as last input.
+- ACK will be recieved by `setConfirmCallback` under @PostConstruct annotation.
+
 ### Todo
 
-- Consumer bulk read.
-- Producer publish confirm.
+- Consumer batch poll.
+- Multiple consumers reading from same queue.
+- Database batch commit.
